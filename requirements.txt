@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+scikit-learn
+pinecone-client
+joblib
