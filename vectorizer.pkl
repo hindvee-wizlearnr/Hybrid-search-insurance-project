@@ -1,0 +1,36 @@
+import json
+import joblib
+from pymongo import MongoClient
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Step 1: Connect to MongoDB
+client = MongoClient("your-mongodb-uri")  # e.g., "mongodb+srv://username:password@cluster.mongodb.net/"
+db = client["video-insurance"]
+collection = db["llm_generated_metadata"]
+
+# Step 2: Extract all summaries from llm_metadata.sections[].summary
+summaries = []
+
+for doc in collection.find({}, {"llm_metadata": 1}):
+    try:
+        llm_metadata_str = doc.get("llm_metadata", "")
+        if not llm_metadata_str:
+            continue
+        llm_metadata = json.loads(llm_metadata_str)
+        sections = llm_metadata.get("sections", [])
+        for section in sections:
+            summary = section.get("summary", "").strip()
+            if summary:
+                summaries.append(summary)
+    except Exception as e:
+        print(f"Skipping a document due to error: {e}")
+
+print(f"✅ Extracted {len(summaries)} summaries.")
+
+# Step 3: Train the TF-IDF vectorizer
+vectorizer = TfidfVectorizer()
+vectorizer.fit(summaries)
+
+# Step 4: Save the vectorizer
+joblib.dump(vectorizer, "vectorizer.pkl")
+print("✅ TF-IDF vectorizer trained and saved as 'vectorizer.pkl'")
