@@ -4,7 +4,7 @@ from pymongo import MongoClient
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 # Step 1: Connect to MongoDB
-client = MongoClient("mongodb+srv://<db_username>:<db_password>@videp-insurance-01.4s1v1.mongodb.net/?retryWrites=true&w=majority&appName=videp-insurance-01")  
+client = MongoClient("mongodb+srv://wizuser:Wiz_2022@videp-insurance-01.4s1v1.mongodb.net/?retryWrites=true&w=majority&appName=videp-insurance-01")  
 db = client["video-insurance"]
 collection = db["llm_generated_metadata"]
 
